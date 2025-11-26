@@ -568,11 +568,23 @@ chmod 755 /var/www/it-request-tracking/server/uploads
 
 ### 11.1. Tạo file ecosystem.config.js (nếu chưa có)
 
-File `ecosystem.config.js` đã có sẵn trong repository. Nếu chưa có:
+File `ecosystem.config.js` đã có sẵn trong repository. **QUAN TRỌNG:** Cần cập nhật `DATABASE_URL` với thông tin database thực tế.
+
+**Kiểm tra và cập nhật DATABASE_URL:**
 
 ```bash
 cd /var/www/it-request-tracking
-cat > ecosystem.config.js << 'EOF'
+
+# Kiểm tra file ecosystem.config.js
+cat ecosystem.config.js
+
+# Sửa file ecosystem.config.js (thay 'your_password' bằng password thực tế)
+nano ecosystem.config.js
+```
+
+**File `ecosystem.config.js` cần có `DATABASE_URL` trong phần `env`:**
+
+```javascript
 module.exports = {
   apps: [{
     name: 'it-request-api',
@@ -582,18 +594,24 @@ module.exports = {
     exec_mode: 'fork',
     env: {
       NODE_ENV: 'production',
-      PORT: 4000
+      PORT: 4000,
+      DATABASE_URL: 'postgres://it_user:your_secure_password@localhost:5432/it_request_tracking'
     },
     error_file: '/var/log/pm2/it-api-error.log',
     out_file: '/var/log/pm2/it-api-out.log',
     log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
     merge_logs: true,
     autorestart: true,
-    max_memory_restart: '500M'
+    max_memory_restart: '500M',
+    watch: false,
+    ignore_watch: ['node_modules', 'logs', 'uploads']
   }]
 }
-EOF
 ```
+
+**Lưu ý:** 
+- Thay `your_secure_password` bằng password thực tế của user `it_user` (đã tạo ở Bước 4.3)
+- Nếu dùng user `postgres` thay vì `it_user`, sửa thành: `postgres://postgres:your_password@localhost:5432/it_request_tracking`
 
 ### 11.2. Tạo thư mục log
 
@@ -603,11 +621,30 @@ mkdir -p /var/log/pm2
 
 ### 11.3. Khởi động PM2
 
+**Trước khi khởi động, đảm bảo:**
+1. ✅ Server đã được build: `cd server && npm run build`
+2. ✅ `DATABASE_URL` đã được cập nhật trong `ecosystem.config.js`
+3. ✅ Database đã được tạo và restore
+
 ```bash
 cd /var/www/it-request-tracking
+
+# Xóa process cũ (nếu có)
+pm2 delete it-request-api 2>/dev/null || true
+
+# Khởi động PM2
 pm2 start ecosystem.config.js
+
+# Lưu cấu hình
 pm2 save
+
+# Thiết lập auto-start khi reboot
 pm2 startup
+```
+
+**Nếu có lỗi, kiểm tra logs:**
+```bash
+pm2 logs it-request-api --lines 50
 ```
 
 ### 11.4. Kiểm tra PM2
