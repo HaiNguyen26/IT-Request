@@ -985,10 +985,43 @@ cd server && npm run build && cd ..
 cd webapp && export VITE_API_URL=http://27.71.16.15/api && npm run build && cd ..
 
 # Restart PM2
-pm2 restart it-request-api
+pm2 restart it-request-api --update-env
 
 # Reload Nginx
 systemctl reload nginx
+```
+
+### Cập nhật Database (nếu có thay đổi schema)
+
+**Ví dụ: Cập nhật username cho management accounts từ `trunghai`/`thanhtung` sang tên đầy đủ:**
+
+```bash
+cd /var/www/it-request-tracking/server/db
+
+# Cấp quyền thực thi cho script
+chmod +x update-management-usernames-on-server.sh
+
+# Chạy script
+./update-management-usernames-on-server.sh it_request_tracking postgres
+```
+
+**Hoặc chạy SQL trực tiếp:**
+
+```bash
+sudo -u postgres psql -d it_request_tracking <<EOF
+UPDATE management_accounts
+SET username = 'nguyễn trung hải',
+    updated_at = NOW()
+WHERE username = 'trunghai' AND role = 'itManager';
+
+UPDATE management_accounts
+SET username = 'lê thanh tùng',
+    updated_at = NOW()
+WHERE username = 'thanhtung' AND role = 'leadership';
+
+-- Kiểm tra kết quả
+SELECT role, username, display_name FROM management_accounts ORDER BY role;
+EOF
 ```
 
 ---
@@ -1070,6 +1103,7 @@ chmod -R 755 /var/www/it-request-tracking
 
 ## Tóm tắt Checklist
 
+### Lần đầu deploy:
 - [ ] Xóa database cũ trên server (nếu có)
 - [ ] Backup database từ máy local
 - [ ] Upload backup lên server
@@ -1082,6 +1116,14 @@ chmod -R 755 /var/www/it-request-tracking
 - [ ] Cấu hình PM2
 - [ ] Cấu hình Nginx
 - [ ] Mở firewall ports
+- [ ] Test ứng dụng
+
+### Khi cập nhật code:
+- [ ] Pull code mới từ GitHub
+- [ ] Cài đặt dependencies mới (nếu có)
+- [ ] Build lại server và webapp
+- [ ] Restart PM2
+- [ ] Cập nhật database (nếu có thay đổi schema)
 - [ ] Test ứng dụng
 
 ---
