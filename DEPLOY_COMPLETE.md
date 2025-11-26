@@ -488,6 +488,34 @@ EOF
 
 **Lưu ý:** Nếu dùng user `postgres`, bỏ qua bước này (postgres có quyền đầy đủ).
 
+### 5.3.1. Kiểm tra quyền đã cấp (tùy chọn)
+
+**Nếu muốn xác nhận quyền đã được cấp đúng:**
+
+```bash
+cd /var/www/it-request-tracking/server/db
+
+# Chạy script kiểm tra quyền
+chmod +x verify-permissions.sh
+./verify-permissions.sh it_request_tracking it_user postgres
+```
+
+**Hoặc kiểm tra thủ công:**
+```bash
+sudo -u postgres psql -d it_request_tracking -c "
+SELECT 
+    tablename,
+    has_table_privilege('it_user', tablename, 'SELECT') AS can_select,
+    has_table_privilege('it_user', tablename, 'INSERT') AS can_insert,
+    has_table_privilege('it_user', tablename, 'UPDATE') AS can_update
+FROM pg_tables
+WHERE schemaname = 'public'
+ORDER BY tablename;
+"
+```
+
+**Kết quả mong đợi:** Tất cả các bảng phải có `can_select`, `can_insert`, `can_update` = `t` (true).
+
 ### 5.4. Kiểm tra restore
 
 ```bash
