@@ -79,8 +79,21 @@ const initialEmployeeForm: Employee & { id: string } = {
   avatarColor: '',
 }
 
+const SESSION_STORAGE_KEY = 'it_request_session'
+
 function App() {
-  const [session, setSession] = useState<Session | null>(null)
+  // Load session from localStorage on mount
+  const [session, setSession] = useState<Session | null>(() => {
+    try {
+      const saved = localStorage.getItem(SESSION_STORAGE_KEY)
+      if (saved) {
+        return JSON.parse(saved) as Session
+      }
+    } catch (error) {
+      console.error('Failed to load session from localStorage', error)
+    }
+    return null
+  })
   const [employees, setEmployees] = useState<Employee[]>([])
   const [requests, setRequests] = useState<ServiceRequest[]>([])
   const [selectedEmployeeId, setSelectedEmployeeId] = useState('')
@@ -111,8 +124,8 @@ function App() {
   const [managementLoginForms, setManagementLoginForms] = useState<
     Record<ManagerRole, ManagementLoginForm>
   >({
-    itManager: { username: 'trunghai', password: '' },
-    leadership: { username: 'thanhtung', password: '' },
+    itManager: { username: 'Nguyễn Trung Hải', password: '' },
+    leadership: { username: 'Lê Thanh Tùng', password: '' },
   })
   const [managementLoginErrors, setManagementLoginErrors] = useState<
     Record<ManagerRole, string | null>
@@ -343,6 +356,21 @@ function App() {
     }
   }, [requests])
 
+  const handleLogout = () => {
+    setSession(null)
+    localStorage.removeItem(SESSION_STORAGE_KEY)
+    setSelectedRequestId(null)
+    setCreationFeedback(null)
+    setNoteDraft('')
+    setSearchKeyword('')
+    resetRequestForm()
+    setEmployeeLoginForm({ name: '', password: '' })
+    setManagementLoginForms({
+      itManager: { username: 'Nguyễn Trung Hải', password: '' },
+      leadership: { username: 'Lê Thanh Tùng', password: '' },
+    })
+  }
+
   const resetRequestForm = (priority: PriorityKey = 'medium') => {
     setFormState({
       title: '',
@@ -419,7 +447,9 @@ function App() {
         [role]: profile,
       }))
 
-      setSession({ role, profileId: account.id })
+      const newSession = { role, profileId: account.id }
+      setSession(newSession)
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(newSession))
       setSelectedRequestId(null)
       setCreationFeedback(null)
       setNoteDraft('')
@@ -429,7 +459,7 @@ function App() {
       setManagementLoginForms((prev) => ({
         ...prev,
         [role]: {
-          username: account.username,
+          username: account.displayName,
           password: '',
         },
       }))
@@ -459,7 +489,9 @@ function App() {
       const account = await api.loginEmployee({ name, password })
       const mapped = mapEmployee(account)
       setEmployees([mapped])
-      setSession({ role: 'employee', profileId: mapped.id })
+      const newSession = { role: 'employee' as const, profileId: mapped.id }
+      setSession(newSession)
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(newSession))
       setSelectedEmployeeId(mapped.id)
       setEmployeeLoginForm({ name: '', password: '' })
       setSelectedRequestId(null)
@@ -817,6 +849,7 @@ function App() {
               notesLoadingId={notesLoadingId}
               isLoadingRequests={isLoadingRequests}
               onDeleteRequest={handleDeleteRequest}
+              onLogout={handleLogout}
             />
           )}
           {session.role === 'itManager' && (
@@ -845,6 +878,7 @@ function App() {
               importFeedback={importFeedback}
               onImportEmployees={handleImportEmployees}
               importInputRef={importInputRef}
+              onLogout={handleLogout}
             />
           )}
           {session.role === 'leadership' && (
@@ -852,6 +886,7 @@ function App() {
               requests={requests}
               overview={slaOverview}
               profile={managementProfiles.leadership}
+              onLogout={handleLogout}
             />
           )}
         </main>

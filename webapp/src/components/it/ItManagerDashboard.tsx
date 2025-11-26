@@ -133,6 +133,7 @@ interface ItManagerDashboardProps {
     importFeedback: string | null
     onImportEmployees: (event: ChangeEvent<HTMLInputElement>) => void
     importInputRef: RefObject<HTMLInputElement | null>
+    onLogout?: () => void
 }
 
 export const ItManagerDashboard = ({
@@ -149,6 +150,7 @@ export const ItManagerDashboard = ({
     filteredEmployeeDirectory,
     employeeDirectorySearch,
     onEmployeeDirectorySearchChange,
+    onLogout,
 }: ItManagerDashboardProps) => {
     // State cho employee request modal
     const [isEmployeeRequestModalOpen, setIsEmployeeRequestModalOpen] = useState(false)
@@ -204,10 +206,21 @@ export const ItManagerDashboard = ({
         <div className="flex w-full flex-col bg-[#080A0D]">
             {/* 1. Khu vực Header và Metrics (Trên cùng) */}
             <div className="flex-shrink-0 space-y-6 p-6">
-                {/* Tiêu đề chính */}
-                <h1 className="text-4xl font-extrabold uppercase tracking-wider text-gradient-dashboard">
-                    DASHBOARD IT SUPPORT
-                </h1>
+                {/* Tiêu đề chính và nút đăng xuất */}
+                <div className="flex items-center justify-between">
+                    <h1 className="text-4xl font-extrabold uppercase tracking-wider text-gradient-dashboard">
+                        DASHBOARD IT SUPPORT
+                    </h1>
+                    {onLogout && (
+                        <button
+                            onClick={onLogout}
+                            className="rounded-lg bg-red-500/20 px-4 py-2 text-sm font-semibold text-red-300 transition hover:bg-red-500/30 border border-red-500/40"
+                            title="Đăng xuất"
+                        >
+                            🚪 Đăng xuất
+                        </button>
+                    )}
+                </div>
 
                 {/* Metrics Box (3 Hộp) */}
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

@@ -40,6 +40,7 @@ interface EmployeeDashboardProps {
   isLoadingRequests: boolean
   onRequestUpdate?: (updatedRequest: ServiceRequest) => void
   onDeleteRequest?: (id: string, employeeId: string) => void
+  onLogout?: () => void
 }
 
 type TabType = 'create' | 'myRequests'
@@ -55,6 +56,7 @@ export const EmployeeDashboard = ({
   isLoadingRequests,
   onMyRequestsUpdate,
   onDeleteRequest,
+  onLogout,
 }: EmployeeDashboardProps) => {
   // State quản lý tab active (mặc định: 'create')
   const [activeTab, setActiveTab] = useState<TabType>('create')
@@ -141,9 +143,22 @@ export const EmployeeDashboard = ({
             IT SUPPORT DASHBOARD
           </h1>
 
-          {/* Ngày hiện tại */}
-          <div className="text-sm font-medium text-white">
-            Ngày: {new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+          <div className="flex items-center gap-4">
+            {/* Ngày hiện tại */}
+            <div className="text-sm font-medium text-white">
+              Ngày: {new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </div>
+
+            {/* Nút đăng xuất */}
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="rounded-lg bg-red-500/20 px-4 py-2 text-sm font-semibold text-red-300 transition hover:bg-red-500/30 border border-red-500/40"
+                title="Đăng xuất"
+              >
+                🚪 Đăng xuất
+              </button>
+            )}
           </div>
         </div>
       </header>

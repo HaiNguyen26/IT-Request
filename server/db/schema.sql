@@ -104,8 +104,8 @@ CREATE INDEX IF NOT EXISTS idx_management_accounts_role ON management_accounts(r
 
 INSERT INTO management_accounts (role, username, password_hash, display_name, email, department)
 VALUES
-    ('itManager', 'trunghai', '$2a$10$/noA9ML2d4gAQbr9oOoZ.Ox0NaaC7SVwrT0kXtK1RdJVV6otA735W', 'Nguyễn Trung Hải', 'nguyen.trung.hai@rmg123.com', 'IT Operations'),
-    ('leadership', 'thanhtung', '$2a$10$/noA9ML2d4gAQbr9oOoZ.Ox0NaaC7SVwrT0kXtK1RdJVV6otA735W', 'Lê Thanh Tùng', 'le.thanh.tung@rmg123.com', 'Điều hành')
+    ('itManager', 'nguyễn trung hải', '$2a$10$/noA9ML2d4gAQbr9oOoZ.Ox0NaaC7SVwrT0kXtK1RdJVV6otA735W', 'Nguyễn Trung Hải', 'nguyen.trung.hai@rmg123.com', 'IT Operations'),
+    ('leadership', 'lê thanh tùng', '$2a$10$/noA9ML2d4gAQbr9oOoZ.Ox0NaaC7SVwrT0kXtK1RdJVV6otA735W', 'Lê Thanh Tùng', 'le.thanh.tung@rmg123.com', 'Điều hành')
 ON CONFLICT (username) DO UPDATE
 SET
     role = EXCLUDED.role,

@@ -10,6 +10,7 @@ interface LeadershipDashboardProps {
   requests: ServiceRequest[]
   overview: SlaOverview
   profile: Employee
+  onLogout?: () => void
 }
 
 const formatHoursMinutes = (hours: number | null): string => {
@@ -38,7 +39,7 @@ const getQuarterRange = (baseDate: Date) => {
   return { start, end }
 }
 
-export const LeadershipDashboard = ({ requests, overview, profile }: LeadershipDashboardProps) => {
+export const LeadershipDashboard = ({ requests, overview, profile, onLogout }: LeadershipDashboardProps) => {
   const now = new Date()
   const { start: currentQuarterStart, end: currentQuarterEnd } = getQuarterRange(now)
   const previousQuarterStart = new Date(currentQuarterStart)
@@ -216,9 +217,22 @@ export const LeadershipDashboard = ({ requests, overview, profile }: LeadershipD
             LEADERSHIP DASHBOARD
           </h1>
 
-          {/* Ngày hiện tại */}
-          <div className="text-sm font-medium text-text-light">
-            Ngày: {new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+          <div className="flex items-center gap-4">
+            {/* Ngày hiện tại */}
+            <div className="text-sm font-medium text-text-light">
+              Ngày: {new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+            </div>
+
+            {/* Nút đăng xuất */}
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="rounded-lg bg-red-500/20 px-4 py-2 text-sm font-semibold text-red-300 transition hover:bg-red-500/30 border border-red-500/40"
+                title="Đăng xuất"
+              >
+                🚪 Đăng xuất
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -312,25 +326,25 @@ export const LeadershipDashboard = ({ requests, overview, profile }: LeadershipD
                 <table className="w-full border-collapse">
                   <thead className="sticky top-0 z-10 bg-white/5 backdrop-blur-sm">
                     <tr>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-white/90">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90">
                         Mã Yêu Cầu
                       </th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-white/90">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90">
                         Mô Tả Yêu Cầu
                       </th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-white/90">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90">
                         Nhân Viên Gửi
                       </th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-white/90">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90">
                         Người Xử Lý
                       </th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-white/90">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90">
                         Ưu Tiên
                       </th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-white/90">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90">
                         Trạng Thái
                       </th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-white/90">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90">
                         Thời Gian SLA
                       </th>
                     </tr>
@@ -345,46 +359,46 @@ export const LeadershipDashboard = ({ requests, overview, profile }: LeadershipD
                         return (
                           <tr
                             key={request.id}
-                            className={`transition hover:bg-white/5 ${isOverdue ? 'bg-rose-500/15 text-rose-100' : 'text-white'
+                            className={`transition-all duration-200 ease-in-out hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer ${isOverdue ? 'bg-rose-500/15 text-rose-100' : 'text-white'
                               }`}
                           >
-                            <td className="px-3 py-2">
-                              <span className={`font-mono text-xs font-semibold ${isOverdue ? 'text-rose-200' : 'text-white'}`}>
+                            <td className="px-4 py-3">
+                              <span className={`font-mono text-sm font-semibold ${isOverdue ? 'text-rose-200' : 'text-white'}`}>
                                 {request.id.slice(0, 8)}
                               </span>
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-4 py-3">
                               <div className="max-w-xs">
-                                <p className={`text-xs font-medium ${isOverdue ? 'text-rose-100' : 'text-white'}`}>
+                                <p className={`text-sm font-medium ${isOverdue ? 'text-rose-100' : 'text-white'}`}>
                                   {request.title}
                                 </p>
-                                <p className={`mt-0.5 text-[10px] line-clamp-1 ${isOverdue ? 'text-rose-200/90' : 'text-white/80'}`}>
+                                <p className={`mt-1 text-xs line-clamp-1 ${isOverdue ? 'text-rose-200/90' : 'text-white/80'}`}>
                                   {request.description}
                                 </p>
                               </div>
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-4 py-3">
                               <div>
-                                <p className={`text-xs font-medium ${isOverdue ? 'text-rose-100' : 'text-white'}`}>
+                                <p className={`text-sm font-medium ${isOverdue ? 'text-rose-100' : 'text-white'}`}>
                                   {request.employeeName}
                                 </p>
-                                <p className={`text-[10px] ${isOverdue ? 'text-rose-200/90' : 'text-white/70'}`}>
+                                <p className={`text-xs ${isOverdue ? 'text-rose-200/90' : 'text-white/70'}`}>
                                   {request.employeeDepartment}
                                 </p>
                               </div>
                             </td>
-                            <td className="px-3 py-2">
-                              <span className={`text-xs ${isOverdue ? 'text-rose-100' : 'text-white'}`}>{handler}</span>
+                            <td className="px-4 py-3">
+                              <span className={`text-sm ${isOverdue ? 'text-rose-100' : 'text-white'}`}>{handler}</span>
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-4 py-3">
                               <PriorityBadge priority={request.priority} />
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-4 py-3">
                               <StatusBadge status={request.status} />
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-4 py-3">
                               <span
-                                className={`rounded-full px-3 py-1 text-xs font-semibold ${isOverdue
+                                className={`rounded-full px-3 py-1.5 text-sm font-semibold ${isOverdue
                                   ? 'bg-rose-500/25 text-rose-100 border border-rose-500/60'
                                   : 'bg-emerald-500/25 text-emerald-100 border border-emerald-500/60'
                                   }`}

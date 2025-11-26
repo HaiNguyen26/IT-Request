@@ -4,7 +4,7 @@ import { query } from '../db/pool'
 const DEFAULT_ACCOUNTS = [
   {
     role: 'itManager',
-    username: 'trunghai',
+    username: 'nguyễn trung hải',
     password: 'RMG123@',
     displayName: 'Nguyễn Trung Hải',
     email: 'nguyen.trung.hai@rmg123.com',
@@ -12,7 +12,7 @@ const DEFAULT_ACCOUNTS = [
   },
   {
     role: 'leadership',
-    username: 'thanhtung',
+    username: 'lê thanh tùng',
     password: 'RMG123@',
     displayName: 'Lê Thanh Tùng',
     email: 'le.thanh.tung@rmg123.com',
@@ -22,6 +22,7 @@ const DEFAULT_ACCOUNTS = [
 
 export const ensureDefaultManagementAccounts = async () => {
   for (const account of DEFAULT_ACCOUNTS) {
+    // Normalize username: lowercase và trim
     const normalizedUsername = account.username.trim().toLowerCase()
     const passwordHash = await bcrypt.hash(account.password, 10)
     await query(

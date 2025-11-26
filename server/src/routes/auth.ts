@@ -10,7 +10,8 @@ router.post('/management/login', async (req, res, next) => {
   try {
     const { role, username, password } = managementLoginSchema.parse(req.body)
 
-    const normalizedUsername = username.toLowerCase()
+    // Normalize username: lowercase và trim để match với database
+    const normalizedUsername = username.trim().toLowerCase()
     const result = await query(
       `SELECT id, role, username, password_hash AS "passwordHash", display_name AS "displayName", email, department
        FROM management_accounts

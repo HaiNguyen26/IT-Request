@@ -97,7 +97,7 @@ export const LoginView = ({
 
               {/* Tiêu đề chính */}
               <h1 className="mb-2 text-3xl font-extrabold tracking-wider text-text-light">
-                TRUNG TÂM HỖ TRỢ IT
+                CỔNG HỖ TRỢ IT
               </h1>
 
               {/* Tiêu đề phụ */}
@@ -253,7 +253,7 @@ export const LoginView = ({
                     value={managementForms.itManager.username}
                     onChange={(e) => onManagementFieldChange('itManager', 'username', e.target.value)}
                     className="input-field w-full rounded-lg px-4 py-3 text-text-light placeholder:text-gray-500 focus:outline-none"
-                    placeholder="Nhập tên đăng nhập (ví dụ: it)"
+                    placeholder="Nhập tên đăng nhập (ví dụ: Nguyễn Trung Hải)"
                     disabled={managementLoadingRole === 'itManager'}
                   />
                 </div>
@@ -315,7 +315,7 @@ export const LoginView = ({
                     value={managementForms.leadership.username}
                     onChange={(e) => onManagementFieldChange('leadership', 'username', e.target.value)}
                     className="input-field w-full rounded-lg px-4 py-3 text-text-light placeholder:text-gray-500 focus:outline-none"
-                    placeholder="Nhập tên đăng nhập (ví dụ: leadership)"
+                    placeholder="Nhập tên đăng nhập (ví dụ: Lê Thanh Tùng)"
                     disabled={managementLoadingRole === 'leadership'}
                   />
                 </div>
@@ -354,6 +354,18 @@ export const LoginView = ({
                 </div>
               </form>
             )}
+
+            {/* Chữ ký */}
+            <div className="mt-6 pt-4 border-t border-border-dark text-center">
+              <p 
+                className="text-sm font-medium italic text-gray-400"
+                style={{
+                  textShadow: '0 0 8px rgba(59, 130, 246, 0.4), 0 0 16px rgba(59, 130, 246, 0.2)',
+                }}
+              >
+                Coding by Hai Nguyen - RMG
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -18,8 +18,8 @@ echo ""
 echo "This will:"
 echo "  - DELETE all management_accounts"
 echo "  - INSERT 2 correct accounts:"
-echo "    1. IT Manager: trunghai (Nguyễn Trung Hải)"
-echo "    2. Leadership: thanhtung (Lê Thanh Tùng)"
+echo "    1. IT Manager: nguyễn trung hải (Nguyễn Trung Hải)"
+echo "    2. Leadership: lê thanh tùng (Lê Thanh Tùng)"
 echo ""
 
 read -p "Are you sure? (yes/no): " confirm
