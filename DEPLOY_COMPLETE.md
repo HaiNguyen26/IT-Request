@@ -995,6 +995,47 @@ systemctl reload nginx
 
 **Ví dụ: Cập nhật username cho management accounts từ `trunghai`/`thanhtung` sang tên đầy đủ:**
 
+**Nếu database đã có duplicate accounts (4 bản ghi), sử dụng script fix:**
+
+```bash
+cd /var/www/it-request-tracking/server/db
+
+# Cấp quyền thực thi cho script
+chmod +x fix-duplicate-management-accounts.sh
+
+# Chạy script để xóa duplicate và chỉ giữ lại 2 bản ghi mới
+./fix-duplicate-management-accounts.sh it_request_tracking postgres
+```
+
+**Hoặc chạy SQL trực tiếp:**
+
+```bash
+sudo -u postgres psql -d it_request_tracking <<EOF
+-- Xóa bản ghi cũ
+DELETE FROM management_accounts WHERE username = 'trunghai' AND role = 'itManager';
+DELETE FROM management_accounts WHERE username = 'thanhtung' AND role = 'leadership';
+
+-- Đảm bảo có 2 bản ghi mới
+INSERT INTO management_accounts (role, username, password_hash, display_name, email, department)
+VALUES
+    ('itManager', 'nguyễn trung hải', '\$2a\$10\$/noA9ML2d4gAQbr9oOoZ.Ox0NaaC7SVwrT0kXtK1RdJVV6otA735W', 'Nguyễn Trung Hải', 'nguyen.trung.hai@rmg123.com', 'IT Operations'),
+    ('leadership', 'lê thanh tùng', '\$2a\$10\$/noA9ML2d4gAQbr9oOoZ.Ox0NaaC7SVwrT0kXtK1RdJVV6otA735W', 'Lê Thanh Tùng', 'le.thanh.tung@rmg123.com', 'Điều hành')
+ON CONFLICT (username) DO UPDATE
+SET role = EXCLUDED.role,
+    password_hash = EXCLUDED.password_hash,
+    display_name = EXCLUDED.display_name,
+    email = EXCLUDED.email,
+    department = EXCLUDED.department,
+    updated_at = NOW();
+
+-- Kiểm tra kết quả
+SELECT role, username, display_name FROM management_accounts ORDER BY role;
+SELECT COUNT(*) as total_accounts FROM management_accounts;
+EOF
+```
+
+**Nếu database chưa có duplicate (chỉ có 2 bản ghi cũ), sử dụng script update:**
+
 ```bash
 cd /var/www/it-request-tracking/server/db
 
@@ -1003,25 +1044,6 @@ chmod +x update-management-usernames-on-server.sh
 
 # Chạy script
 ./update-management-usernames-on-server.sh it_request_tracking postgres
-```
-
-**Hoặc chạy SQL trực tiếp:**
-
-```bash
-sudo -u postgres psql -d it_request_tracking <<EOF
-UPDATE management_accounts
-SET username = 'nguyễn trung hải',
-    updated_at = NOW()
-WHERE username = 'trunghai' AND role = 'itManager';
-
-UPDATE management_accounts
-SET username = 'lê thanh tùng',
-    updated_at = NOW()
-WHERE username = 'thanhtung' AND role = 'leadership';
-
--- Kiểm tra kết quả
-SELECT role, username, display_name FROM management_accounts ORDER BY role;
-EOF
 ```
 
 ---
