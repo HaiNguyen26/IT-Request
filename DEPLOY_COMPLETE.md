@@ -297,9 +297,49 @@ sudo -u postgres psql -c "CREATE DATABASE it_request_tracking;"
 # Tạo user mới (nếu chưa có)
 sudo -u postgres psql -c "CREATE USER it_user WITH PASSWORD 'your_secure_password';" 2>/dev/null || echo "User already exists"
 
-# Cấp quyền
+# Cấp quyền trên database
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE it_request_tracking TO it_user;"
 ```
+
+**QUAN TRỌNG: Cấp quyền trên các bảng (sau khi restore database):**
+
+```bash
+# Vào thư mục db
+cd /var/www/it-request-tracking/server/db
+
+# Chạy script cấp quyền
+chmod +x grant-permissions.sh
+./grant-permissions.sh it_request_tracking it_user postgres
+```
+
+**Hoặc cấp quyền thủ công:**
+```bash
+sudo -u postgres psql -d it_request_tracking << 'EOF'
+-- Cấp quyền sử dụng schema
+GRANT USAGE ON SCHEMA public TO it_user;
+
+-- Cấp quyền trên tất cả các bảng
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO it_user;
+
+-- Cấp quyền trên tất cả các sequences
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO it_user;
+
+-- Cấp quyền trên các types (enums)
+GRANT USAGE ON TYPE request_priority TO it_user;
+GRANT USAGE ON TYPE request_status TO it_user;
+GRANT USAGE ON TYPE note_visibility TO it_user;
+GRANT USAGE ON TYPE note_type TO it_user;
+GRANT USAGE ON TYPE management_role TO it_user;
+
+-- Cấp quyền mặc định cho các bảng tương lai
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO it_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO it_user;
+EOF
+```
+
+**Lưu ý:** 
+- Nếu dùng user `postgres` thay vì `it_user`, không cần cấp quyền (postgres có quyền đầy đủ)
+- Nếu gặp lỗi `permission denied for table management_accounts`, chạy script cấp quyền trên
 
 ---
 
@@ -417,7 +457,38 @@ sudo -u postgres psql -d it_request_tracking -f /root/it_request_tracking_backup
 
 Script `restore-database.sh` đã tự động drop và tạo lại database, không cần làm thủ công.
 
-### 5.3. Kiểm tra restore
+### 5.3. Cấp quyền cho user database (QUAN TRỌNG)
+
+**Nếu dùng user `it_user` (không phải `postgres`), cần cấp quyền sau khi restore:**
+
+```bash
+# Vào thư mục db
+cd /var/www/it-request-tracking/server/db
+
+# Chạy script cấp quyền
+chmod +x grant-permissions.sh
+./grant-permissions.sh it_request_tracking it_user postgres
+```
+
+**Hoặc cấp quyền thủ công:**
+```bash
+sudo -u postgres psql -d it_request_tracking << 'EOF'
+GRANT USAGE ON SCHEMA public TO it_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO it_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO it_user;
+GRANT USAGE ON TYPE request_priority TO it_user;
+GRANT USAGE ON TYPE request_status TO it_user;
+GRANT USAGE ON TYPE note_visibility TO it_user;
+GRANT USAGE ON TYPE note_type TO it_user;
+GRANT USAGE ON TYPE management_role TO it_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO it_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO it_user;
+EOF
+```
+
+**Lưu ý:** Nếu dùng user `postgres`, bỏ qua bước này (postgres có quyền đầy đủ).
+
+### 5.4. Kiểm tra restore
 
 ```bash
 # Kiểm tra số lượng records
