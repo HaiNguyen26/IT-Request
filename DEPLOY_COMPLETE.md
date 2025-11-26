@@ -461,11 +461,35 @@ Script `restore-database.sh` đã tự động drop và tạo lại database, kh
 
 **Nếu dùng user `it_user` (không phải `postgres`), cần cấp quyền sau khi restore:**
 
+**Nếu gặp lỗi khi pull (có thay đổi local):**
+```bash
+cd /var/www/it-request-tracking
+
+# Xem thay đổi local
+git status
+
+# Stash thay đổi local (tạm thời lưu lại)
+git stash
+
+# Pull code mới
+git pull origin main
+
+# Hoặc nếu muốn bỏ thay đổi local và dùng code từ GitHub:
+# git reset --hard origin/main
+```
+
+**Sau đó chạy script cấp quyền:**
 ```bash
 # Vào thư mục db
 cd /var/www/it-request-tracking/server/db
 
-# Chạy script cấp quyền
+# Chạy script cấp quyền đầy đủ (script mới)
+chmod +x fix-permissions-complete.sh
+./fix-permissions-complete.sh it_request_tracking it_user postgres
+```
+
+**Hoặc dùng script cấp quyền cơ bản:**
+```bash
 chmod +x grant-permissions.sh
 ./grant-permissions.sh it_request_tracking it_user postgres
 ```
@@ -648,9 +672,21 @@ npm run build
 
 ```bash
 cd /var/www/it-request-tracking/webapp
-export VITE_API_URL=http://27.71.16.15/api
+
+# Nếu có domain (ví dụ: it-request.rmg123.com)
+export VITE_API_URL=http://it-request.rmg123.com/api
+# Hoặc nếu dùng HTTPS:
+# export VITE_API_URL=https://it-request.rmg123.com/api
+
+# Nếu chỉ dùng IP
+# export VITE_API_URL=http://27.71.16.15/api
+
 npm run build
 ```
+
+**Lưu ý:** 
+- Thay `it-request.rmg123.com` bằng domain thực tế của bạn
+- Nếu dùng HTTPS, đổi `http://` thành `https://`
 
 ---
 
@@ -755,6 +791,34 @@ pm2 logs it-request-api
 
 ---
 
+## Bước 12: Cấu hình Domain Name (Tùy chọn)
+
+### 12.1. Cấu hình DNS
+
+**Nếu bạn đã có domain (ví dụ: `it-request.rmg123.com`):**
+
+1. **Thêm A record trong DNS:**
+   - **Type:** A
+   - **Name:** `it-request` (hoặc `@` nếu dùng root domain)
+   - **Value:** `27.71.16.15`
+   - **TTL:** 3600 (hoặc mặc định)
+
+2. **Chờ DNS propagate** (thường 5-30 phút, có thể lên đến 24h)
+
+3. **Kiểm tra DNS:**
+   ```bash
+   nslookup it-request.rmg123.com
+   # Hoặc
+   dig it-request.rmg123.com
+   ```
+
+**Nếu chưa có domain, bạn có thể:**
+- Mua domain từ nhà cung cấp (GoDaddy, Namecheap, v.v.)
+- Hoặc dùng subdomain miễn phí (nếu có)
+- Hoặc tiếp tục dùng IP `27.71.16.15`
+
+---
+
 ## Bước 12: Cấu hình Nginx
 
 ### 12.1. Cài đặt Nginx (nếu chưa có)
@@ -767,6 +831,16 @@ systemctl start nginx
 
 ### 12.2. Tạo file cấu hình Nginx
 
+**Nếu có domain (ví dụ: `it-request.rmg123.com`):**
+```bash
+cat > /etc/nginx/sites-available/it-request-tracking << 'EOF'
+server {
+    listen 80;
+    server_name it-request.rmg123.com 27.71.16.15;
+EOF
+```
+
+**Nếu chỉ dùng IP:**
 ```bash
 cat > /etc/nginx/sites-available/it-request-tracking << 'EOF'
 server {
