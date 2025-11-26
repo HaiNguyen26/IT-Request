@@ -93,10 +93,9 @@
 - Repository: https://github.com/HaiNguyen26/IT-Request.git
 - Production Server: 27.71.16.15
 
-### Deployment Guides
+### Deployment Guide
+- **DEPLOY_COMPLETE.md** - Hướng dẫn triển khai hoàn chỉnh (Backup DB local → Deploy lên server)
 - **GITHUB_SETUP.md** - Hướng dẫn push code lên GitHub
-- **DEPLOY_GITHUB.md** - Hướng dẫn deploy từ GitHub lên server
-- **DEPLOY.md** - Hướng dẫn deploy chi tiết (cách cũ - upload trực tiếp)
 
 ### Quick Deploy từ GitHub
 ```bash

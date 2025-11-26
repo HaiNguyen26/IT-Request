@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react'
 import { api } from '../../api'
 import { mapNote } from '../../utils/mappers'
 import { formatDateTime } from '../../utils/time'
-import { formatFileSize, getFileIcon } from '../../utils/format'
 import type { ServiceRequest, Employee } from '../../types'
-
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api'
 
 interface ITRequestModalProps {
     request: ServiceRequest | null

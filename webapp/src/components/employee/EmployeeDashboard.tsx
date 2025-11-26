@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { priorityMeta, statusMeta } from '../../constants/meta'
+import { priorityMeta } from '../../constants/meta'
 import { PriorityBadge } from '../common/PriorityBadge'
 import { StatusBadge } from '../common/StatusBadge'
 import { formatDateTime, timeRemaining } from '../../utils/time'
@@ -54,7 +54,6 @@ export const EmployeeDashboard = ({
   myRequests,
   isLoadingRequests,
   onMyRequestsUpdate,
-  onRequestUpdate,
   onDeleteRequest,
 }: EmployeeDashboardProps) => {
   // State quản lý tab active (mặc định: 'create')
@@ -131,14 +130,6 @@ export const EmployeeDashboard = ({
       hoverBorder: 'border-gray-600/60',
     },
   }
-
-  // Lấy ngày hiện tại
-  const currentDate = new Date().toLocaleDateString('vi-VN', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
 
   return (
     <div className="flex h-full max-h-full min-h-0 flex-col overflow-hidden bg-[#080A0D]">
