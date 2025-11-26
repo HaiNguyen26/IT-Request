@@ -1,0 +1,82 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+**/.env
+**/.env.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Uploads (giữ lại cấu trúc thư mục nhưng ignore files)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# PM2
+.pm2/
+ecosystem.config.js
+
+# Cache
+.cache/
+.vite-cache-*/
+.npm/
+.eslintcache
+
+# TypeScript
+*.tsbuildinfo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database dumps (nếu có)
+*.sql.backup
+*.dump
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
+

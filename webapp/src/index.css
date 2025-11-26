@@ -1,0 +1,892 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Animation cho badge yêu cầu từ IT - Nhẹ nhàng hơn */
+@keyframes blink-notice {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(251, 146, 60, 0.4);
+  }
+
+  50% {
+    opacity: 0.75;
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(251, 146, 60, 0.6);
+  }
+}
+
+@keyframes arrow-bounce {
+
+  0%,
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateX(10px) scale(1.15);
+    opacity: 0.9;
+  }
+}
+
+.animate-blink-notice {
+  animation: blink-notice 1.2s ease-in-out infinite;
+}
+
+.animate-arrow-bounce {
+  animation: arrow-bounce 1s ease-in-out infinite;
+}
+
+/* Gradient backgrounds for containers */
+.gradient-card {
+  background: linear-gradient(135deg, #161b22 0%, #1a2028 50%, #161b22 100%);
+}
+
+.gradient-card-blue {
+  background: linear-gradient(135deg, #161b22 0%, #1e2635 30%, #1a2a3d 60%, #161b22 100%);
+}
+
+.gradient-card-purple {
+  background: linear-gradient(135deg, #161b22 0%, #1f1a2e 30%, #2a1f3d 60%, #161b22 100%);
+}
+
+.gradient-card-green {
+  background: linear-gradient(135deg, #161b22 0%, #1a2e20 30%, #1f3d28 60%, #161b22 100%);
+}
+
+.gradient-card-orange {
+  background: linear-gradient(135deg, #161b22 0%, #2e1f1a 30%, #3d281f 60%, #161b22 100%);
+}
+
+.gradient-modal {
+  background: linear-gradient(135deg, #161b22 0%, #1a2028 50%, #161b22 100%);
+}
+
+.gradient-header {
+  background: linear-gradient(135deg, #080A0D 0%, #0d0f14 50%, #080A0D 100%);
+}
+
+.gradient-sidebar-card {
+  background: linear-gradient(135deg, #161b22 0%, #1c2128 30%, #161b22 100%);
+}
+
+.gradient-user-card {
+  background: linear-gradient(135deg, #161b22 0%, #1a2835 30%, #1e3a4f 50%, #1a2835 70%, #161b22 100%);
+}
+
+.gradient-sla-card {
+  background: linear-gradient(135deg, #161b22 0%, #1a1f2e 30%, #1f2435 50%, #1a1f2e 70%, #161b22 100%);
+}
+
+:root {
+  color-scheme: dark;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+
+  /* I. Tổng quan Phong cách & Bảng Màu (Color Palette) */
+  /* Nền (Background) */
+  --bg-dark: #080A0D;
+  /* Deep Dark - Màu đen xanh đậm nhất, tạo chiều sâu và không gian */
+
+  /* Màu Nhấn (Accent) */
+  --accent-cyan: #00FFFF;
+  /* Vibrant Cyan - Màu công nghệ cao */
+  --accent-blue: #007bff;
+  /* Electric Blue - Màu công nghệ cao */
+
+  /* Card & UI Colors */
+  --card-dark: #161b22;
+  --text-light: #C9D1D9;
+  --text-subtle: #8B949E;
+  --border-dark: #30363D;
+
+  /* Status Colors */
+  --status-pending: #FFC107;
+  --status-inprogress: #007bff;
+  --status-completed: #4CAF50;
+
+  /* Legacy colors (giữ cho tương thích) */
+  --primary-blue: #00A3FF;
+  --accent-indigo: #4f46e5;
+}
+
+body {
+  @apply m-0 min-h-screen antialiased;
+  /* Background: #080A0D - Deep Dark, tạo chiều sâu và không gian cho các phần tử nổi lên */
+  background: #080A0D;
+  overflow-x: hidden;
+  color: var(--text-light);
+}
+
+#root {
+  @apply min-h-screen;
+  overflow-x: hidden;
+}
+
+/* Hiệu ứng Glow Tỏa Mềm - Tĩnh lặng và tập trung */
+.login-card-wrapper {
+  position: relative;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+/* External Glow - Nguồn sáng duy nhất, tạo quầng sáng mềm mại bao quanh Form - Lan mạnh ra ngoài */
+.login-card-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -60px;
+  border-radius: 36px;
+  background: radial-gradient(ellipse at center,
+      rgba(79, 70, 229, 0.2) 0%,
+      rgba(59, 130, 246, 0.15) 25%,
+      rgba(6, 182, 212, 0.12) 45%,
+      transparent 75%);
+  filter: blur(80px);
+  z-index: -1;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.login-card-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: -90px;
+  border-radius: 48px;
+  background: radial-gradient(ellipse at center,
+      rgba(99, 102, 241, 0.15) 0%,
+      rgba(6, 182, 212, 0.1) 35%,
+      transparent 70%);
+  filter: blur(100px);
+  z-index: -2;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* Layer 3: Card Đăng Nhập Chính (Main Login Card) - Glassmorphism với Glow và Gradient */
+.login-card {
+  background: linear-gradient(135deg,
+      rgba(15, 23, 42, 0.9) 0%,
+      rgba(30, 41, 59, 0.85) 50%,
+      rgba(15, 23, 42, 0.9) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 80px rgba(79, 70, 229, 0.2),
+    0 0 150px rgba(6, 182, 212, 0.15),
+    0 0 220px rgba(59, 130, 246, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Input Fields Styling */
+.input-field {
+  background-color: #0d1014;
+  border: 1px solid #6b7280;
+  /* border-gray-500 */
+  transition: all 0.2s ease-in-out;
+}
+
+.input-field:focus {
+  border-color: #3b82f6;
+  /* border-blue-500 */
+  box-shadow: 0 0 0 1px #3b82f6;
+  outline: none;
+}
+
+/* App Input Style - Dark input với Electric Blue glow khi focus (Halo Effect) */
+.app-input {
+  background-color: #1a1e26;
+  /* Tối hơn Card một chút */
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+}
+
+.app-input:focus {
+  border-color: #007bff;
+  /* Electric Blue */
+  box-shadow:
+    0 0 0 3px rgba(0, 123, 255, 0.15),
+    /* Inner glow */
+    0 0 15px rgba(0, 123, 255, 0.3),
+    /* Outer glow - Halo Effect */
+    0 0 25px rgba(0, 123, 255, 0.2);
+  /* Extended glow */
+  outline: none;
+}
+
+.app-input::placeholder {
+  color: var(--text-subtle);
+}
+
+.app-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary Button - Gradient Electric Blue -> Soft Purple với Shadow Glow cực mạnh */
+.btn-primary {
+  background: linear-gradient(135deg, #007bff 0%, #6f42c1 100%);
+  /* Electric Blue -> Soft Purple */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0066cc 0%, #5a32a3 100%);
+  /* Darker gradient */
+  box-shadow:
+    0 0 20px rgba(0, 123, 255, 0.5),
+    /* Electric Blue glow */
+    0 0 40px rgba(111, 66, 193, 0.4),
+    /* Purple glow */
+    0 8px 16px rgba(0, 0, 0, 0.3);
+  /* Depth shadow */
+  transform: translateY(-2px);
+  /* Nhấc nhẹ lên */
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Radio Card Selected State - Vibrant Cyan với Shadow Glow rực rỡ */
+.radio-card.selected {
+  border-color: #00FFFF;
+  /* Vibrant Cyan */
+  border-width: 2px;
+  /* Viền dày hơn */
+  background-color: rgba(0, 255, 255, 0.05);
+  /* Cyan mờ nhẹ hơn */
+  box-shadow:
+    0 0 0 2px rgba(0, 255, 255, 0.2),
+    /* Inner glow */
+    0 0 15px rgba(0, 255, 255, 0.4),
+    /* Outer glow rực rỡ */
+    0 0 30px rgba(0, 255, 255, 0.2);
+  /* Extended glow */
+}
+
+/* Text Gradient - Electric Blue to Vibrant Cyan */
+.text-gradient-dashboard {
+  background: linear-gradient(135deg, #007bff 0%, #00FFFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Avatar Neon Border & Glow */
+.avatar-neon {
+  position: relative;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(#080A0D, #080A0D) padding-box,
+    linear-gradient(135deg, #22c55e 0%, #00FFFF 100%) border-box;
+  box-shadow:
+    0 0 20px rgba(34, 197, 94, 0.4),
+    0 0 40px rgba(0, 255, 255, 0.3),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+/* Avatar với viền gradient xoay 360 độ */
+.avatar-gradient-rotating {
+  position: relative;
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);
+  z-index: 1;
+}
+
+.avatar-gradient-rotating::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,
+      #f59e0b 0%,
+      #ef4444 25%,
+      #8b5cf6 50%,
+      #3b82f6 75%,
+      #10b981 100%,
+      #f59e0b 100%);
+  z-index: -1;
+  animation: rotate-gradient 3s linear infinite;
+  filter: blur(0.5px);
+}
+
+.avatar-gradient-rotating::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: #080A0D;
+  z-index: -1;
+}
+
+@keyframes rotate-gradient {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Logo với hiệu ứng lóe sáng gradient chạy qua liên tục */
+.logo-shimmer-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  max-width: 220px;
+  width: 100%;
+}
+
+.logo-shimmer-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -150%;
+  width: 80%;
+  height: calc(100% + 16px);
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 15%,
+      rgba(255, 255, 255, 0.2) 35%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.2) 65%,
+      rgba(255, 255, 255, 0.08) 85%,
+      transparent 100%);
+  filter: blur(20px);
+  animation: logo-shimmer 3s ease-in-out infinite;
+  z-index: 20;
+  pointer-events: none;
+  border-radius: 50%;
+  mask-image: linear-gradient(90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 8%,
+      rgba(0, 0, 0, 0.6) 15%,
+      rgba(0, 0, 0, 1) 25%,
+      rgba(0, 0, 0, 1) 75%,
+      rgba(0, 0, 0, 0.6) 85%,
+      rgba(0, 0, 0, 0.2) 92%,
+      transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 8%,
+      rgba(0, 0, 0, 0.6) 15%,
+      rgba(0, 0, 0, 1) 25%,
+      rgba(0, 0, 0, 1) 75%,
+      rgba(0, 0, 0, 0.6) 85%,
+      rgba(0, 0, 0, 0.2) 92%,
+      transparent 100%);
+}
+
+/* Logo shimmer wrapper full height - cho khung nhận diện */
+.logo-shimmer-wrapper-full {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  max-width: 220px;
+  width: 100%;
+  height: 100%;
+}
+
+.logo-shimmer-wrapper-full::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -150%;
+  width: 80%;
+  height: calc(100% + 12px);
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 15%,
+      rgba(255, 255, 255, 0.2) 35%,
+      rgba(255, 255, 255, 0.35) 50%,
+      rgba(255, 255, 255, 0.2) 65%,
+      rgba(255, 255, 255, 0.08) 85%,
+      transparent 100%);
+  filter: blur(20px);
+  animation: logo-shimmer 2.5s ease-in-out infinite;
+  z-index: 20;
+  pointer-events: none;
+  border-radius: 50%;
+  mask-image: linear-gradient(90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 8%,
+      rgba(0, 0, 0, 0.6) 15%,
+      rgba(0, 0, 0, 1) 25%,
+      rgba(0, 0, 0, 1) 75%,
+      rgba(0, 0, 0, 0.6) 85%,
+      rgba(0, 0, 0, 0.2) 92%,
+      transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 8%,
+      rgba(0, 0, 0, 0.6) 15%,
+      rgba(0, 0, 0, 1) 25%,
+      rgba(0, 0, 0, 1) 75%,
+      rgba(0, 0, 0, 0.6) 85%,
+      rgba(0, 0, 0, 0.2) 92%,
+      transparent 100%);
+}
+
+@keyframes logo-shimmer {
+  0% {
+    left: -150%;
+  }
+
+  100% {
+    left: 150%;
+  }
+}
+
+/* Status Dot với viền dày */
+.status-dot-active {
+  border: 3px solid #080A0D;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+}
+
+/* Ambient Glow Wrapper - bao quanh Card để nhấn mạnh khu vực tương tác chính */
+.ambient-glow-wrapper {
+  position: relative;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ambient-glow-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: radial-gradient(ellipse at center,
+      rgba(0, 123, 255, 0.25) 0%,
+      rgba(0, 123, 255, 0.15) 30%,
+      rgba(0, 123, 255, 0.08) 50%,
+      transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Ambient Glow cho Form Card - Electric Blue (Legacy - giữ cho tương thích) */
+.form-card-ambient-glow {
+  position: relative;
+}
+
+.form-card-ambient-glow::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 12px;
+  background: radial-gradient(ellipse at center,
+      rgba(0, 123, 255, 0.25) 0%,
+      rgba(0, 123, 255, 0.15) 30%,
+      rgba(0, 123, 255, 0.08) 50%,
+      transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Request Card Hover Effect - Nhấc nhẹ lên và tăng bóng với Glow tỏa sáng */
+.request-card-hover {
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.request-card-hover::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 12px;
+  background: radial-gradient(ellipse at center,
+      rgba(0, 123, 255, 0.15) 0%,
+      rgba(0, 255, 255, 0.12) 25%,
+      rgba(0, 123, 255, 0.08) 40%,
+      transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.request-card-hover:hover {
+  transform: translateY(-4px);
+  /* Nhấc nhẹ lên */
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.4),
+    0 6px 12px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(0, 123, 255, 0.3),
+    0 0 60px rgba(0, 255, 255, 0.2);
+  /* Tăng bóng và Glow tỏa sáng */
+  z-index: 1;
+}
+
+.request-card-hover:hover::before {
+  opacity: 1;
+  /* Hiển thị glow khi hover */
+}
+
+/* Status Border Colors cho Request Cards - Viền dọc bên trái dày 3px */
+.request-card-status-new {
+  border-left: 3px solid #007bff;
+  /* Xanh Lam (Blue) */
+  position: relative;
+}
+
+.request-card-status-inProgress {
+  border-left: 3px solid #9333ea;
+  /* Tím (Purple) */
+  position: relative;
+}
+
+.request-card-status-waiting {
+  border-left: 3px solid #fbbf24;
+  /* Vàng (Yellow/Amber) */
+  position: relative;
+}
+
+.request-card-status-completed {
+  border-left: 3px solid #22c55e;
+  /* Green */
+  position: relative;
+}
+
+/* Priority Urgent override - Đỏ rực */
+.request-card-priority-urgent {
+  border-left: 3px solid #ef4444 !important;
+  /* Đỏ rực */
+}
+
+/* Status Badge với màu sắc bão hòa cao và Box Shadow cùng màu */
+.status-badge-glow {
+  box-shadow: 0 2px 8px rgba(var(--badge-color-rgb), 0.4);
+}
+
+/* App Card - Glassmorphism/Dark Card */
+.app-card {
+  background: linear-gradient(135deg,
+      rgba(22, 27, 34, 0.95) 0%,
+      rgba(15, 23, 42, 0.9) 50%,
+      rgba(22, 27, 34, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.app-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.4),
+    0 0 2px rgba(255, 255, 255, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Avatar Gradient/Glow - Cyan/Xanh lá */
+/* Avatar với viền xoay 360 độ hiện đại */
+@keyframes rotate-border {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.avatar-gradient {
+  position: relative;
+  background: linear-gradient(135deg, #0d1520 0%, #0f1925 50%, #0d1520 100%);
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.avatar-gradient::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,
+      #10b981 0%,
+      #06b6d4 20%,
+      #3b82f6 40%,
+      #8b5cf6 60%,
+      #ec4899 80%,
+      #f59e0b 100%,
+      #10b981 100%);
+  z-index: -1;
+  animation: rotate-border 2s linear infinite;
+  filter: blur(0.5px);
+  box-shadow:
+    0 0 40px rgba(6, 182, 212, 0.8),
+    0 0 80px rgba(16, 185, 129, 0.6),
+    0 0 120px rgba(59, 130, 246, 0.4);
+}
+
+.avatar-gradient::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d1520 0%, #0f1925 50%, #0d1520 100%);
+  z-index: -1;
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Custom Scrollbar cho Request Cards Container */
+.max-h-\[600px\]::-webkit-scrollbar {
+  width: 8px;
+}
+
+.max-h-\[600px\]::-webkit-scrollbar-track {
+  background: #080A0D;
+  border-radius: 4px;
+}
+
+.max-h-\[600px\]::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.max-h-\[600px\]::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* Animation cho gradient của nút */
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Logo container với hiệu ứng gradient lóe sáng chạy chéo */
+.logo-gradient-container {
+  background: linear-gradient(135deg, #0D1219 0%, #1a2a4a 25%, #3b5f9f 50%, #1a2a4a 75%, #0D1219 100%);
+  background-size: 200% 200%;
+  animation: gradient-shift 2s ease infinite;
+}
+
+/* CTA Button Styling */
+.login-cta-button {
+  box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.group:hover .login-cta-button {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
+}
+
+/* Logo Container Wrapper với Gradient Overlay và hiệu ứng lóe sáng tinh tế cho toàn bộ container */
+.logo-container-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-container-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      transparent 30%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(0, 255, 255, 0.2) 52%,
+      rgba(255, 255, 255, 0.15) 54%,
+      transparent 70%,
+      transparent 100%);
+  background-size: 200% 100%;
+  background-position: -200% 0;
+  pointer-events: none;
+  animation: shimmer-sweep 3s ease infinite;
+  z-index: 1;
+  border-radius: 8px;
+}
+
+.logo-container-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.02) 50%,
+      transparent 100%);
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0.6;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.logo-container-wrapper:hover::after {
+  opacity: 0.8;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(0, 255, 255, 0.05) 50%,
+      transparent 100%);
+}
+
+/* Animation cho hiệu ứng shimmer chạy từ trái qua phải (giống nút đăng nhập) */
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-warning {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+  }
+
+  25% {
+    opacity: 0.85;
+    transform: scale(0.98);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+  }
+
+  75% {
+    opacity: 0.9;
+    transform: scale(0.99);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+}
+
+.animate-pulse-warning {
+  animation: pulse-warning 0.6s ease-in-out;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.6;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+
+  50% {
+    opacity: 0.9;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  }
+}
+
+/* Modal overlay & container animations */
+.modal-overlay {
+  animation: fade-in 0.35s ease;
+}
+
+.modal-panel {
+  border-radius: 20px;
+  box-shadow:
+    0 20px 80px rgba(0, 0, 0, 0.65),
+    0 0 60px rgba(0, 255, 255, 0.08);
+  animation:
+    modal-pop 0.4s ease,
+    glow-pulse 6s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-pulse-warning {
+  animation: pulse-warning 0.6s ease-in-out;
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    box-shadow:
+      0 20px 80px rgba(0, 0, 0, 0.65),
+      0 0 30px rgba(59, 130, 246, 0.25);
+  }
+
+  50% {
+    box-shadow:
+      0 20px 80px rgba(0, 0, 0, 0.65),
+      0 0 50px rgba(6, 182, 212, 0.35);
+  }
+}
